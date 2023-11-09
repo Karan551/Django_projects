@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Eshop</title>
+</head>
+<body>
+<h1>This is my Eshop!</h1>
+{% load static %}
+<a href="{% static 'eshop/first.txt' %}">Go To Text file.</a>
+<a href="{% static 'images/pizza.jpg'  %}">Pizza Image</a>
+<figure>
+    <a href="{% static 'images/pizza.jpg'  %}">
+        <img
+                src="{% static 'images/burger.jpg'  %}"
+                alt="Burger Image."
+                width="300"
+                height="300"
+                title="GO to Pizza image."
+        />
+    </a>
+    <figcaption>Click Above image To see Pizza image.</figcaption>
+</figure>
+<br>
+<h3>{{products}}</h3>
+<!--&lt;!&ndash;this is a logic to print the product with names and values to the html page.&ndash;&gt;-->
+<!--{% for dict in products %}-->
+<!--{% for keys,values in dict.items %}-->
+<!--<ul>-->
+<!--    <li>{{keys}}:{{values}}</li>-->
+<!--</ul>-->
+<!--{% endfor %}-->
+<!--<br>-->
+<!--{% endfor %}-->
+
+<!--Using slice-->
+{% for values in products %}
+<h5> {{values}} </h5>
+
+{% endfor %}
+
+<!--<a href="{% static 'eshop/first.txt' %}">Go To Text file.</a>-->
+<!--<img src="{% static 'images/pizza.jpg'  %}" alt="Food Images." width="620" height="500">-->
+</body>
+</html>

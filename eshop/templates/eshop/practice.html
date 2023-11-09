@@ -1,0 +1,114 @@
+{% extends './basic.html' %} 
+{% block title %}Practice Carousel{% endblock title %}
+{% load static %} 
+{% block body %}
+<div class="container my-4">
+  <!-- action="/eshop/practice/" -->
+  <form method="POST" id="userForm">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="name" class="form-label">Enter Name:</label>
+      <input
+        type="text"
+        class="form-control"
+        id="name"
+        placeholder="Enter Name:"
+        name="userName"
+      />
+    </div>
+    <div class="my-3">
+      <label for="email" class="form-label">Enter Email:</label>
+      <input
+        type="text"
+        class="form-control"
+        id="email"
+        placeholder="Enter email:"
+        name="userEmail"
+      />
+    </div>
+    <input type="submit" value="Submit Form" id="submit" name="submit" />
+  </form>
+</div>
+{% endblock body %} {% block js %}
+<script
+  src="https://code.jquery.com/jquery-3.7.1.js"
+  integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+  crossorigin="anonymous"
+></script>
+<script>
+  /*$("#userForm").on('submit', (e) => {
+    e.preventDefault()
+    console.log(userData)
+    console.log("Data Has been sent.")
+})*/
+  // console.log(userData)
+  /*
+$(document).on("submit", "#userForm", function(element) {
+    element.preventDefault()
+    let userData = {
+        name: $("input[name=userName]").val(),
+        email: $("input[name=userEmail]").val(),
+        csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+    }
+    console.log(userData)
+    $.ajax({
+            method: "POST",
+            url: "/eshop/practice/",
+            data: userData,
+            success: (data) => {
+                console.log(data);
+            }
+        })
+        .done(function(msg) {
+            console.log("Data Has been sent by" + userData['name']);
+        });
+})*/
+  // --------------------using fetch api-------------
+  /*let promise = fetch("http://127.0.0.1:8000/eshop/practice/");
+  promise
+    .then((response) => {
+     let a=response.json();
+     return a
+    })
+    .then((value) => {
+      console.log(value);
+    });
+*/
+//
+let user = {
+    name: $("input[name=userName]").val(),
+    email: $("input[name=userEmail]").val(),
+    csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+}
+async function sendData(){
+let response = await fetch('http://127.0.0.1:8000/eshop/practice/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8'
+    },
+    body: JSON.stringify(user)
+  });
+}
+// calling a function
+sendData()
+/*
+let promise = fetch("http://127.0.0.1:8000/eshop/practice/",obj);
+
+promise
+  .then((response) => {
+    return response.text();
+  })
+  .then((value) => {
+    console.log(value);
+  });
+*/
+//
+async function f1() {
+    let response = await fetch("https://api.nationalize.io?name=nathaniel");
+    let result = await response.json();
+    console.log(result);
+  }
+
+
+</script>
+{% endblock js %}

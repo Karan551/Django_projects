@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}{% endblock title %}</title>
+    <link rel="shortcut icon" href="https://img.icons8.com/?size=512&id=dxoYK8bxqiJr&format=png" type="image/x-icon" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous" />
+    <style>
+        .pop-btn{
+      margin:10px 5px;
+      padding:6px 5px;
+    }
+    
+    </style>
+    {% block css %}
+    {% endblock css %}
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand fs-4" href="/eshop/">My Awesome cart</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link fs-5" aria-current="page" href="/eshop/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fs-5" href="/eshop/contact/">Contact Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fs-5" aria-current="page" href="/eshop/about/">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fs-5" aria-current="page" href="/eshop/productView/">Product View</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fs-5" aria-current="page" href="/eshop/checkOut/">Check Out</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fs-5" aria-current="page" href="/eshop/tracker/">Track Product</a>
+                    </li>
+                </ul>
+                <form class="d-flex" role="search" action="/eshop/search/">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search" id="search" />
+                    <button class="btn btn-primary" type="submit">
+                        Search
+                    </button>
+                </form>
+                <!-- -->
+                <button type="button" class="btn btn-success pop-btn" data-bs-container="body" data-bs-toggle="popover" data-bs-title="My Shopping Cart Items:" data-bs-placement="bottom" data-bs-content="Bottom popover" id='pop-cart' data-bs-html="true">
+                    Cart (<span id="num-prod">0</span>)
+                </button>
+            </div>
+        </div>
+    </nav>
+    {% block body %}
+    <!--Here body will come-->
+    {% endblock body %}
+    <!--This is used to load jquery.-->
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <!--bootstrap cdn-->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+    {% block js %}
+    <script>
+    // To show the cart items in HTML
+    let num = document.querySelector('#num-prod')
+    if (localStorage.getItem('cart') == null) {
+        // To create a global variable.
+        var cart = {};
+    } else {
+        cart = JSON.parse((localStorage.getItem('cart')))
+        // let numberOfProd = Object.keys(cart).length
+        // To show the total product in our cart.
+        let total = 0
+        for (let item in cart) {
+            total = total + cart[item][0]
+        }
+        // To show the cart items when page reload.
+        num.innerHTML = total
+    }
+
+    function updateCart(cart) {
+        let totalProduct = 0;
+        for (let item in cart) {
+            // console.log(cart)
+            document.getElementById('cart-' + item).innerHTML = `<button class='btn btn-danger minus' id="minus-${item}">-</button><span class='value' id="value-${item}">${cart[item][0]}</span><button class='btn btn-success plus' id="plus-${item}">+</button>`
+            totalProduct = totalProduct + cart[item][0]
+
+        }
+
+        // ye abhi fix karna hai.
+        // To update the local storage 
+        // console.log('This is new cart :',cart)
+        // if()
+        localStorage.setItem('cart', JSON.stringify(cart))
+        // To show the total Product in HTML.
+        num.innerHTML = totalProduct
+        // To update the pop over.
+        updatePopOver(cart)
+
+    }
+    // when jquery is loaded.
+
+    // this is fixed checked OK.
+    $(".rm-cart").on("click", "button.minus", function() {
+        // find the key of the cart object. where \a\ is the key.
+        a = this.id.slice(6, )
+        cart[a][0] = cart[a][0] - 1
+        // reject the negative value.
+        cart[a][0] = Math.max(0, cart[a][0])
+        document.getElementById("value-" + a).innerHTML = cart[a][0]
+        // calling the function
+        updateCart(cart)
+    })
+    // this is checked OK.
+    $(".rm-cart").on("click", "button.plus", function() {
+        // find the key of the cart object. where \a\ is the key.
+        a = this.id.slice(5, )
+        // console.log(cart[a])
+        cart[a][0] = cart[a][0] + 1
+        // calling the function
+        // console.log(cart[a])
+        updateCart(cart)
+    })
+
+
+    // when jquery is loaded.
+    // This is works only cart buttons.
+    // jquery starts here
+    $('.cart').click(function() {
+        // store the product id into a variable and convert into string.
+        let idStr = this.id.toString();
+        // If prdouct is already in our cart then apply this condition
+        let price_each_product = $('#price-' + idStr).text()
+        let productName = $("#name-" + idStr).text()
+        // console.log(price_each_product)
+        if (cart[idStr] != undefined) {
+            qty = cart[idStr][0] + 1
+            cart[idStr] = [qty, productName, price_each_product]
+
+        }
+        //   // If prdouct is not already in our cart then apply this condition
+        else {
+            // get the product name using jqery
+            // let productName = $("#name-" + idStr).text()
+            let qty = 1
+            cart[idStr] = [qty, productName, price_each_product]
+            // calling the function To update Cart.
+            updateCart(cart)
+            // calling the function to Update the popover.
+            updatePopOver(cart)
+            // To store the cart in local storage.
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+    });
+
+    // This is used to enable popover
+    const popCart = document.getElementById('pop-cart')
+    // function update pop over
+    updatePopOver(cart)
+    const popover = new bootstrap.Popover(popCart)
+
+    function updatePopOver(cart) {
+        let popStr = ''
+        let counter = 1;
+        popStr = popStr + "<div class='mx-2 '>"
+        for (let item in cart) {
+            // get the product Name with the help of jquery.
+
+            let productName = $("#name-" + item).text()
+            let productQty = cart[item][0]
+            // if qty is greater than 0
+            if (productQty > 0) {
+                // console.log("Product Qty:", cart[item][0])
+                popStr = popStr + `<b class='text-info-emphasis'> ${counter}. &nbsp;</b> <b class='text-success fs-6'>${productName}</b> Qty is:&nbsp;<b class='text-success fs-6'>${productQty}.</b><br>`
+                counter += 1
+            }
+        }
+        // Adding clear cart and checkout buttons.
+        popStr = popStr + `</div><div class='my-2'><a href='/eshop/checkOut/' class='btn btn-primary' id="checkout">Checkout</a><a href='#' class='btn btn-danger mx-2' id='clear-2'>Clear Cart</a></div>`
+        // console.log(popStr)
+
+        // change the data-bs-content value and insert the html tag.
+        popCart.setAttribute('data-bs-content', popStr)
+        // To enable popover
+        const popover = new bootstrap.Popover(popCart, 'data-bs-toggle')
+
+    }
+
+    // This function is used to clear cart 
+    $(document).on('click', '#clear-2', function() {
+        // calling a function
+        clearCart()
+    })
+
+    function clearCart() {
+        // convert the string into object withe the help of JSON
+        cart = JSON.parse(localStorage.getItem('cart'))
+        // console.log(cart)
+        // May be we can change this line.
+        for (let item in cart) {
+            $("#cart-" + item).html(`<button class='btn btn-primary cart' id='${item}'>Add To Cart</button>`)
+
+        }
+        // clear a local Storage.
+        localStorage.clear()
+        // creating an empty cart object.
+        cart = {}
+        // calling a update cart function 
+        updateCart(cart)
+        // reload a webpage
+        location.reload()
+
+    }
+    //
+    </script>
+    {% endblock js %}
+</body>
+
+</html>

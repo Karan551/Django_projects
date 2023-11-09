@@ -1,0 +1,46 @@
+{% extends "blog/basic.html" %}
+{% block title %}
+My Awesome Cart Blog
+{% endblock title %}
+{% block body %}
+<div class="container">
+    <div class="row my-2">
+        {% for items in blog_title %}
+        <div class="col-md-6">
+            <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                    <h3 class="mb-0">{{items.title|title}}</h3>
+                    <div class="mb-1 text-body-secondary">{{items.pub_date}}</div>
+                    <p class="card-text mb-auto">{{items.heading_1_content|title}}</p>
+                    <a href="/blog/blogpost/{{items.post_id}}" class="icon-link gap-1 icon-link-hover stretched-link">
+                        Continue reading
+                        <svg class="bi">
+                            <use xlink:href="#chevron-right"></use>
+                        </svg>
+                    </a>
+                </div>
+                <div class="col-auto d-none d-lg-block">
+                    <img class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg"
+                         role="img" src='/media/{{items.thumbnail}}' aria-label="Placeholder: Thumbnail"
+                         preserveAspectRatio="xMidYMid slice" focusable="false">
+                    <title>Placeholder</title>
+
+                </div>
+            </div>
+        </div>
+        <!--end for row-->
+        {%if forloop.counter|divisibleby:2 %}
+    </div>
+    <div class="row">
+
+    </div>
+    {% endif %}
+    {% endfor %}
+
+
+    <!--end for container-->
+</div>
+<div class="container">
+<!--    <a href="/blog/blogpost/blog_id" class="btn btn-outline-primary btn-lg">Go To blog Post</a>-->
+</div>
+{% endblock body %}

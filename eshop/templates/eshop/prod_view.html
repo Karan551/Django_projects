@@ -1,0 +1,40 @@
+{% extends "eshop/basic.html" %}
+{% block title %}
+Product Name: {{products.0}} - My Awesome Cart
+{% endblock title %}
+{% block body %}
+<div class="container my-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="row border border-3 border-primary rounded-2">
+                <img src="/media/{{products.0.prod_image}}" alt="{{products.0}}-image" width="100%" height="250">
+            </div>
+            <div class=" my-3 d-flex flex-wrap justify-content-center">
+                <button type="button" class="btn btn-primary btn-lg">Buy Now</button>
+                <button type="button" class="btn btn-primary btn-lg mx-4 cart">Add To Cart</button>
+                <!--<a href="#" id="pr-{{item.id}}" class="btn btn-primary cart">Add To Cart</a>-->
+            </div>
+        </div>
+        <div class="col-md-8">
+            <!--Showing the product name-->
+            <h4>{{products.0|capfirst}}</h4>
+            <p class="fw-bold">{{products.0.prod_price}} &#8360;</p>
+            <p class="fs-5 fw-medium">{{products.0.prod_desc}}</p>
+        </div>
+    </div>
+</div>
+<!--testing  purpose-->
+<!--<p>{{products.0.prod_desc|length}}</p>-->
+<!--{% if products.0.prod_desc|length >= 50 %}-->
+<!--<h3>Hello World</h3>-->
+<!--{% else %}-->
+<!--<h4>Thanks</h4>-->
+<!--{% endif%}-->
+<!-- This is for texting purpose.-->
+<a href="/eshop/checkOut/"><button class='btn btn-primary'>Checkout</button></a>
+
+<!--
+<button class="btn btn-primary">+</button><span class="value"></span>
+<button class="btn btn-primary">-</button>
+-->
+{% endblock body %}

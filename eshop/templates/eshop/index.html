@@ -1,0 +1,133 @@
+{% extends './basic.html' %}
+{% block title %}My Awesome Cart{% endblock title %}
+{% block css %}
+<style>
+    col-md-3 {
+    display: inline-block;
+    margin-left: -4px;
+    }
+    .card{
+    border:2px solid black;
+
+    }
+    .carousel-indicators .active {
+    background-color: blue;
+    }
+
+    .col-md-3 img {
+
+    width: 265px;
+    height: 290px;
+    }
+
+    body .carousel-indicator li {
+    background-color: blue;
+    }
+
+    body .carousel-indicators {
+    bottom: 0;
+    }
+
+    body .carousel-control-prev-icon,
+    body .carousel-control-next-icon {
+    background-color: blue;
+    }
+
+    body .carousel-control-prev,body .carousel-control-next{
+    top:auto;
+    bottom:auto;
+    }
+    body .no-padding {
+    padding-left: 0;
+    padding-right: 0;
+    }
+
+    .card-img-top {
+    width: 200px;
+    height: 200px;
+    }
+
+    .cards-wrapper {
+    display: flex;
+    justify-content:center;
+    gap:10px;
+    }
+</style>
+{% endblock %}
+{% block body %}
+{% load static %}
+<div class="container">
+    <!--    this is used to generate two times... slide in a page.-->
+    {% for products,range,nslides in allProds %}
+    <!--To show the products category and Number of products.-->
+    <h2 class='text-center'>{{products.0.category}}|Total Products:{{products|length}}</h2>
+    <!-- -->
+    <div class="row">
+        <!--This is used to show each product in products -->
+        <!--    carousel starts here. -->
+        <div id="demo-{{forloop.counter}}" class="carousel slide my-3">
+            <!-- this is a carousel indicators-->
+            <ul class="carousel-indicators">
+                <li data-bs-target="#demo-{{forloop.counter}}" data-bs-slide-to="0" class="active"></li>
+                {% for i in range %}
+                <li data-bs-target="#demo-{{forloop.parentloop.counter}}" data-bs-slide-to="{{i}}"></li>
+                {% endfor %}
+            </ul>
+            <!--Slideshow starts here -->
+            <div class="carousel-inner no-padding">
+                <!-- this is a first active slide -->
+                <div class="carousel-item active">
+                    <!-- this is first itme-->
+                    <div class="cards-wrapper">
+                        {% for item in products %}
+                        <!-- this is an active card-->
+                        <div class="col-xs-3 col-sm-3 col-md-3">
+                            <!-- this is first card  -->
+                            <div class="card" style="width: 18rem;">
+                                <img src='/media/{{item.prod_image}}' class="card-img-top" alt="Image">
+                                <div class="card-body">
+                                    <h5 class="card-title" id="name-pr-{{item.id}}">{{item.prod_name|title}}</h5>
+                                    <!-- Showing price to the user.-->
+                                    <p><strong>Price is : <span id="price-pr-{{item.id}}">{{item.prod_price}}</span> &#8377</strong></p>
+                                    <!--Rendering template product description conditionally if product length is greater than 50 then show short name and period character if product length is less than 50 then show full desc.-->
+                                    {% if item.prod_desc|length >= 50 %}
+                                    <p>{{item.prod_desc|slice:":50"}}....</p>
+                                    {% else %}
+                                    <p>{{item.prod_desc}}</p>
+                                    {% endif%}
+                                    <span class="rm-cart" id="cart-pr-{{item.id}}">
+                                        <a href="#" id="pr-{{item.id}}" class="btn btn-primary cart">Add To Cart</a>
+                                    </span>
+                                    <a href="/eshop/products/{{item.id}}" id="qv-{{item.id}}" class="btn btn-primary mx-3">Quic View</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
+                        <!--flexbox end-->
+                    </div>
+                    <!--carousel slide end-->
+                </div>
+                <div class="carousel-item">
+                    <div class="cards-wrapper">
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end div tag for row.-->
+    </div>
+    <!-- -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#demo-{{forloop.counter}}" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#demo-{{forloop.counter}}" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+    {% endfor %}
+    <!--container end-->
+</div>
+
+{% endblock body %}

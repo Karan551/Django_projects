@@ -1,0 +1,186 @@
+{% extends "eshop/basic.html" %}
+{% block title %}
+Checkout
+{% endblock title %}
+{% block css %}
+<style>
+    html {  
+      scroll-behavior: smooth;  
+}
+    .form-label{
+        font-size:1.2rem;
+        margin: 5px 3px;
+    }
+    .important{
+        color:red;
+    }
+    .msg{
+        margin:2px 4px;
+    }
+    .error-message{
+        color:red;
+        padding:0px 14px;
+    }
+    input[type='text']{
+        text-transform: uppercase;
+    }
+</style>
+{% endblock css %}
+{% block body %}
+<div class="container my-2">
+    <div class="col border border-4 border-info-subtle rounded-4 p-4">
+        <h2 class="text-center">Step-1 My Awesome Cart Express Checkout - Review Your Cart.</h2>
+        <div class="mt-4">
+            <ol class="list-group list-group-numbered items">
+            </ol>
+        </div>
+    </div>
+    <div class="col my-4 border border-4 border-info-subtle rounded-4 p-4">
+        <h2 class="text-center"> Step-2: Enter Your Details Below:</h2>
+        <form class="row g-3 mt-2" action="/eshop/checkOut/" method="post" id="user-form"> {% csrf_token %}
+            <input type="hidden" name="item-json" id="item-json">
+            <div class="row g-3">
+                <marquee behavior='scroll' scrollamount='10'>
+                    <p class="important msg">All * fields are mandatory.</p>
+                </marquee>
+                <div class="error-message" id="error-message"></div>
+                <div class="col-md-6">
+                    <label for='fname' class="form-label">Enter Your First Name:</label><span class="important">*</span>
+                    <input type="text" class="form-control" placeholder="First name" aria-label="First name" id='fname' name="fname" required>
+                </div>
+                <div class="col-md-6">
+                    <label for='lname' class="form-label">Enter Your Last Name:</label><span class="important">*</span>
+                    <input type="text" class="form-control" placeholder="Last name" aria-label="Last name" id='lname' name="lname" required>
+                </div>
+            </div>
+            <!--  -->
+            <div class="col-md-6">
+                <label for="contact" class="form-label">Contact Number</label><span class="important">*</span>
+                <input type="tel" class="form-control" id="contact" maxlength="10" name='contact' required>
+            </div>
+            <div class="col-md-6">
+                <label for="email" class="form-label">Email</label><span class="important">*</span>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="col-12">
+                <label for="inputAddress" class="form-label">Address</label><span class="important">*</span>
+                <input type="text" class="form-control" id="inputAddress" placeholder="Enter your address:" name="address-1" required>
+            </div>
+            <div class="col-12">
+                <label for="inputAddress2" class="form-label">Address 2</label>
+                <input type="text" class="form-control" id="inputAddress2" placeholder="Enter Your Address:" name="address-2">
+            </div>
+            <div class="col-md-6">
+                <label for="city" class="form-label">City</label><span class="important">*</span>
+                <input type="text" class="form-control" id="city" name='city' required>
+            </div>
+            <div class="col-md-4">
+                <label for="inputState" class="form-label">State</label><span class="important">*</span>
+                <select id="inputState" class="form-select" name="state">
+                    <option selected class="fw-bold" value="0">Select State</option>
+                    {% for i in states %}
+                    <option value="{{forloop.counter}}" class="fw-bold fs-5" required>{{i|title}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="pinCode" class="form-label">Pin Code</label><span class="important">*</span>
+                <input type="text" class="form-control" id="pinCode" name="pin-code" required>
+            </div>
+            <div class="d-flex justify-content-center align-items-center flex-wrap gap-3">
+                <button type="submit" class="btn btn-outline-success btn-lg">Place Order</button>
+                <button type="reset" class="btn btn-outline-danger btn-lg">Cancel Order</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock body %}
+{% block js %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script>
+if (localStorage.getItem('cart') == null) {
+    // To create a global variable.
+    var cart = {};
+} else {
+    cart = JSON.parse((localStorage.getItem('cart')))
+    // To change the content
+    let total = 0
+    let popStr = ''
+    // if cart is empty then we show this message.
+    // if (Object.keys(cart).length === 0)
+    // with the help of jqery we can do this.
+    let total_price = 0
+    if (jQuery.isEmptyObject(cart)) {
+        popStr = popStr + `<p  class='fw-bold fs-6 my-2 px-2'>Your cart is empty Please add some items in your cart.</p>`
+        $(".items").html(popStr)
+    } else {
+        for (let item in cart) {
+            // total = total + cart[item][0]
+            // product Name
+            let productName = cart[item][1]
+            // product quantity
+            let qty = Number(cart[item][0])
+            // each product price
+            let each_product_price = Number(cart[item][2])
+            // console.log(item)
+            // console.log('Name:' + productName, " " + "Qty:" + qty)
+            if (qty > 0) {
+                // Total product in our cart.
+                total = total + qty
+                total_price += qty * each_product_price
+                // console.log('Total price is ', qty * each_product_price)
+                popStr = popStr + `<li class="list-group-item d-flex justify-content-between align-items-start fw-bold fs-5">
+                            <div class="ms-2 me-auto">
+                                <div class="px-2" title="Product Name"> ${productName}</div>
+                            </div><span class="badge bg-success rounded-pill" title="Quantity">${qty}</span>
+                            
+                        </li>`
+                // change the html
+                $(".items").html(popStr)
+                $(".items").append(`<li class="list-group-item bg-dark-subtle fw-bold fs-5 d-flex" title="Total Price"><div class='me-auto px-2'>Total Price Is :</div><div>${total_price} &#8377</div></li>`)
+            }
+        }
+
+
+    }
+    // To show the cart items when page reload.
+    $("#num-prod").text(total)
+
+}
+// with the help of jquery store the string in hidden input.
+$("#item-json").val(JSON.stringify(cart))
+// when user submit a form then below action occured.
+{% if thanks %}
+alert(`Thanks for Ordering us. Use Order Id:{{id}} to track this product.Use given order id to track this product on tracker webpage.`)
+
+// clear the local storage.
+localStorage.clear()
+// And redirect to the home page.
+document.location = '/eshop/' 
+{% endif %}
+// when user form submit then check this condition
+// get the form
+const form = document.getElementById("user-form")
+// get the state options.
+const inputState = document.getElementById("inputState")
+
+form.addEventListener("submit", checkData)
+
+function checkData(event) {
+    if (Object.keys(cart).length == 0) {
+        $('.error-message').html('<p class="fs-6">Important! Please add items in your cart.</p>')
+        alert("Please add items in your cart.")
+        // don't submit the form
+        event.preventDefault()
+    } else if (inputState.value == 0) {
+        $('.error-message').html('<p class="fs-6">Important! Please select state.</p>')
+        // go to above and see the message.
+        // location.href = '#error-message'
+        location.href = '#user-form'
+        // don't submit the form
+        event.preventDefault()
+    }
+}
+</script>
+{% endblock js %}

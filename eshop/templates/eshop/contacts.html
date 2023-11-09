@@ -1,0 +1,72 @@
+{% extends "eshop/basic.html" %}
+{% block title %}
+Contact US
+{% endblock title %}
+{% block css %}
+<style>
+    .important{
+        color:red;
+    }
+    .padding{
+        padding:2px 0;
+    }
+    </style>
+{% endblock css %}
+{% block body %}
+<!-- alert we will show here.-->
+<div class="container mt-2 padding ">
+    <div class="alert alert-success alert-dismissible fade show px-4 d-none" role="alert" id='alert'>
+        <strong>Success !</strong> Thanks For Submitting Us a Feedback.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+<div class="container border border-2 border-secondary rounded-2 mt-2">
+    <h2 class="text-center">Contact Us :-</h2>
+    <!--  -->
+    <form action="/eshop/contact/" method="post" id='user-form'> {% csrf_token %}
+        <div class="mb-3">
+            <label for="name" class="form-label fw-medium fs-5">Enter name :</label>
+            <span class="important">*</span>
+            <input type="text" class="form-control text-capitalize" id="name" placeholder="Enter Your Name:" name="name" required>
+        </div>
+        <!--    -->
+        <div class="mb-3">
+            <label for="email" class="form-label fw-medium fs-5">Enter email :</label> <span class="important">*</span>
+            <input type="email" class="form-control" id="email" placeholder="Enter Your Email:" name="email" required>
+        </div>
+        <!--    -->
+        <div class="mb-3">
+            <label for="number" class="form-label fw-medium fs-5">Enter Contact Number :</label> <span class="important">*</span>
+            <input type="tel" class="form-control" id="number" placeholder="Enter your number:" name="number" maxlength="10" required>
+        </div>
+        <!--    -->
+        <div class="mb-3">
+            <label for="query" class="form-label fw-medium fs-5">How Can I help You ? </label> <span class="important">*</span>
+            <textarea class="form-control" id="query" rows="3" name="query" required></textarea>
+        </div>
+        <div class="mb-2 d-grid col-6 mx-auto">
+            <button class="btn btn-outline-success btn-lg" type="submit">Submit</button>
+        </div>
+    </form>
+</div>
+{% endblock body %}
+{% block js %}
+<script>
+// apply jquery when is loaded fully.
+  $("document").ready(function() {
+    $("#user-form").submit((event)=>{
+        // To prevent default action of submit form.
+        event.preventDefault()
+        // clear the form
+        $("#user-form")[0].reset()
+        // To show the alert when user submit us a feedback.
+        $("#alert").removeClass('d-none')
+        // auto hide alert after 3 seconds.
+        setTimeout(()=>{
+            $("#alert").addClass('d-none')
+        },3000)
+    })
+    
+  });
+</script>
+{% endblock js %}

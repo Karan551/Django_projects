@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>carousel with card.</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <style>
+        .cards-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .cars-btn{
+        color:#333;
+        background-color:papayawhip;
+        position:absolute;ss
+        top:50:%;
+        }
+    </style>
+</head>
+
+<body>
+<!-- this is a carousel  -->
+
+<div id="carouselExample" class="carousel slide">
+    <!--    this is carousel indicators.-->
+    <ul class="carousel-indicators">
+        <li data-bs-target="#carouselExample" data-bs-slide-to="0" class="active"></li>
+        {% for i in range %}
+        <li data-bs-target="#carouselExample" data-bs-slide-to="{{i}}"></li>
+        {% endfor %}
+    </ul>
+    <div class="carousel-inner">
+        <!-- this is a slide.-->
+        <!-- this is a first carousel item and it's active. -->
+        <div class="carousel-item active">
+            <div class="cards-wrapper">
+                <!-- this is a first card. -->
+                <div class="card mx-1" style="width: 18rem;">
+                    <img src="/media/{{products.0.prod_image}}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{{products.0.prod_name}}</h5>
+                        <p class="card-text">{{products.0.prod_desc}}
+                        </p>
+                        <a href="#" class="btn btn-primary">Add To Cart</a>
+                    </div>
+                </div>
+                <!-- this is a second card. -->
+                {% for i in products|slice:"1:" %}
+                <div class="card mx-1" style="width: 18rem;">
+                    <img src="/media/{{i.prod_image}}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{{i.prod_name}}</h5>
+                        <p class="card-text">{{i.prod_desc}}
+                        </p>
+                        <a href="#" class="btn btn-primary">Add To Cart</a>
+                    </div>
+                </div>
+                {% if forloop.counter|divisibleby:3 and forloop.counter > 0 and not forloop.last %}
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="cards-wrapper">
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<button class="carousel-control-prev cars-btn" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+</button>
+<button class="carousel-control-next cars-btn" type="button" data-bs-target="#carouselExample"
+        data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+</button>
+
+
+<!-- this is a js. -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

@@ -1,0 +1,144 @@
+{% extends "eshop/basic.html" %}
+<!--here is title-->
+{% block title %}
+Order Tracker - My Awesome Cart
+{% endblock title %}
+<!--here is css-->
+{% block css %}
+<style>
+    .important{
+    color:red;
+    }
+    .msg{
+        margin:3px 4px;
+    }
+</style>
+{% endblock css %}
+{% block body %}
+<!--Here we will collect user details to get details from the database. -->
+<div class="container my-2">
+    <h2 class="my-3 text-center text-capitalize text-success">Enter your details below to track the product:</h2>
+    <p class="important msg">All * fields are mandatory.</p>
+    <form id="trackerForm" method="POST"> {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6">
+                <label for="userOrderId" class="form-label fs-5">Enter your order id : <span class="important">*</span></label>
+                <input class="form-control" type='text' name="userOrderId" placeholder="Enter your order id:" id="userOrderId" title="Enter your order id:">
+            </div>
+            <div class="col-md-6">
+                <label for="email" class="form-label fs-5">Enter your email : <span class="important">*</span></label>
+                <input class="form-control" type="email" name="email" placeholder="Enter your registered email:" id="email" title="Enter your email:">
+            </div>
+        </div>
+        <div class="row">
+            <div class=" col-md-6 mt-3">
+                <button class="btn btn-outline-secondary btn-lg">Track Order</button>
+            </div>
+        </div>
+    </form>
+    <!--Here we will show user order status -->
+    <div class="col my-2">
+        <h2 class="text-center">Your Order Status:</h2>
+        <div>
+            <ul class="list-group" id='items'>
+                <li class="list-group-item text-center fw-bold text-capitalize">Please Enter your Order id and Email To Track your product.</li>
+            </ul>
+        </div>
+    </div>
+    <!--Here we will show order details of customer.-->
+    <div class="col my-4">
+        <h2 class="text-center">Your Order Details:</h2>
+        <div>
+            <ul class="list-group" id='item-details'>
+                <li class="list-group-item text-center fw-bold text-capitalize">your order details are:</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock body %}
+{% block js %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+$("#trackerForm").submit(function(event) {
+    // preventing from page reload and default actions
+    event.preventDefault();
+    // empty the ul
+    $("#items").empty()
+    let popStr = ' '
+    // collect the information of user to send data to server.
+    let formData = {
+        userOrderId: $("#userOrderId").val(),
+        email: $("#email").val(),
+        csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+    }
+    $.ajax({
+            type: "POST",
+            url: "/eshop/tracker/",
+            data: formData,
+            encode: true,
+
+        }).done(function(data) {
+            // data is json string that is coming from server we will have to convert an object here updates is a object.
+            // console.log(data)
+            user_data = JSON.parse(data)
+            console.log(user_data)
+            updates_objects = user_data['updates'][0]
+            // console.log(updates_objects, Object.keys(updates_objects).length)
+            if (user_data['status'] == "success") {
+                for (let i = 1; i < Object.keys(updates_objects).length; i++) {
+                    // console.log(updates_obj)
+                    let txt = updates_objects['text']
+                    let time =updates_objects['time']
+                    console.log(txt)
+                    console.log(time)
+                    // show the updates to the user.
+                    popStr = popStr + `<li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold fs-5"> ${txt}</div>
+                            </div>
+                            <span class="badge bg-success rounded-pill">${time}</span>
+                        </li>`
+                    $('#items').html(popStr)
+                }
+            } else {
+                // show the message if user is entered wrong email or order_id.
+                let error_name = updates_arr['error']
+                let item_name = updates_arr['item']
+                popStr += `<li class="list-group-item d-flex justify-content-between align-items-start">
+                                   <div class="ms-2 me-auto">
+                                       <div class="fw-bold fs-5">No Item for this order_id or email.${error_name}</div>
+                                   </div>
+                                   <span class="badge bg-success rounded-pill">Sorry ${item_name}.</span>
+                               </li>`
+
+                $('#items').html(popStr)
+            }
+            // here we will show user order details.
+            let item_detail = JSON.parse(user_data['response'])
+            console.log(item_detail)
+            let item_str = ' '
+            for (let key in item_detail) {
+                let product_qty = item_detail[key][0]
+                let product_name = item_detail[key][1]
+                // show the product details in ul
+                item_str = item_str + `<li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold fs-5"> ${product_name}</div>
+                            </div>
+                            <span class="badge bg-success rounded-pill">${product_qty}</span>
+                        </li>`
+                $('#item-details').html(item_str)
+
+            }
+
+        })
+        // this message will show when server response is error.
+        .fail(function(data) {
+            console.log(data)
+
+        })
+    // data that we will send to the server.
+    // console.log(formData)
+});
+</script>
+{% endblock js %}
